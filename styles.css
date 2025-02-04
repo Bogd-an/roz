@@ -1,0 +1,36 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #121212;
+  color: #ffffff;
+}
+
+#schedule-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 20px 0;
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+
+th, td {
+  border: 1px solid #ffffff;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #333333;
+}
+.current-day{
+  background-color: rgba(0, 66, 172, 0.252);
+}
+.current-lesson{
+  background-color:  rgba(0, 66, 172, 0.741);
+}
