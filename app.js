@@ -1,6 +1,7 @@
 const app = document.getElementById('app');
 const weekList = ['scheduleFirstWeek', 'scheduleSecondWeek'];
 const urlGroupName = decodeURIComponent(window.location.search).replace("?", "").replace("-", "").toLowerCase();
+const localStorageGroup = localStorage.getItem('selectedGroup');
 
 async function fetchGroups() {
   const url = 'https://api.campus.kpi.ua/schedule/groups';
@@ -8,15 +9,34 @@ async function fetchGroups() {
     const response = await fetch(url);
     const data = await response.json();
     const select = document.getElementById('group-select');
+
+    let selectedGroupId = null;
+
     data.data.forEach(group => {
       const option = document.createElement('option');
       option.value = group.id;
       option.textContent = group.name;
       select.appendChild(option);
-      if(option.textContent.replace("-", "").toLowerCase() == urlGroupName){
-        option.selected = true;
-        fetchSchedule( option.value );
+
+      const normalizedGroupName = group.name.replace("-", "").toLowerCase();
+
+      if (normalizedGroupName === urlGroupName) {
+        selectedGroupId = group.id;
+      } else if (!selectedGroupId && localStorageGroup === group.id) {
+        selectedGroupId = group.id;
       }
+    });
+
+    if (selectedGroupId) {
+      select.value = selectedGroupId;
+      fetchSchedule(selectedGroupId);
+      localStorage.setItem('selectedGroup', selectedGroupId);
+    }
+
+    select.addEventListener('change', () => {
+      const selectedId = select.value;
+      localStorage.setItem('selectedGroup', selectedId);
+      fetchSchedule(selectedId);
     });
   } catch (error) {
     console.error("Помилка завантаження груп", error);
@@ -25,7 +45,7 @@ async function fetchGroups() {
 
 function createTables() {
   const tbody = document.querySelector(`#schedule-container`);
-  tbody.innerHTML = " ";
+  tbody.innerHTML = "";
   weekList.forEach(week => {
     tbody.innerHTML +=
       `<div>
@@ -55,13 +75,8 @@ async function fetchSchedule(groupId) {
       const tbody = document.querySelector(`#${week} tbody`);
       tbody.innerHTML = "";
       data.data[week].forEach(day => {
-        // Сортуємо пари за часом
-        day.pairs.sort((a, b) => {
-          // Порівнюємо часи як рядки, тому спочатку їх потрібно привести до формату, зручного для порівняння
-          return a.time.localeCompare(b.time);
-        });
+        day.pairs.sort((a, b) => a.time.localeCompare(b.time));
 
-        // Додаємо пари в таблицю
         day.pairs.forEach(pairs => {
           const row = document.createElement("tr");
           row.innerHTML = `
@@ -86,7 +101,7 @@ async function fetchCurrentLesson() {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    return data.data; // { currentWeek, currentDay, currentLesson }
+    return data.data; 
   } catch (error) {
     console.error("Помилка завантаження поточного часу", error);
   }
@@ -100,23 +115,24 @@ async function highlightCurrentLesson() {
   const weekName = [
     "Пн", "Вв", "Ср", "Чт", "Пт", "Сб"
   ];
-  
+
   const rows = document.querySelectorAll(`#${weekList[currentWeek]} tbody tr`);
   let currentLessonRow = null;
   rows.forEach(row => {
-    const dayCell =  row.querySelector("td:first-child").textContent;
+    const dayCell = row.querySelector("td:first-child").textContent;
     const timeCell = row.querySelector("td:nth-child(2)").textContent;
-    // Виділяємо день
-    if (dayCell == weekName[currentDay-1]) {
+
+    if (dayCell == weekName[currentDay - 1]) {
       row.classList.add("current-day");
       if (timeCell == lessonTimes[currentLesson - 1]) {
         row.classList.add("current-lesson"); 
-        currentLessonRow = row; // Зберігаємо поточний рядок для прокрутки
+        currentLessonRow = row;
       }
     } else {
       row.style.backgroundColor = "";
     }
   });
+
   if (currentLessonRow) {
     currentLessonRow.scrollIntoView({
       behavior: 'smooth',
@@ -125,7 +141,5 @@ async function highlightCurrentLesson() {
   }
 }
 
-
 createTables();
 fetchGroups();
-  
