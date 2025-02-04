@@ -1,3 +1,3 @@
 # roz
 
-[Веь сторінка примітивного розклвду](https://bogd-an.github.io/roz/index.html)
+[Веб сторінка примітивного розкладу](https://bogd-an.github.io/roz/index.html)
