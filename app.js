@@ -143,3 +143,52 @@ async function highlightCurrentLesson() {
 
 createTables();
 fetchGroups();
+
+
+// ////////////////////////////////////////////////////////////
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log("Service Worker зареєстровано", reg))
+    .catch(err => console.error("Помилка реєстрації Service Worker", err));
+}
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) {
+    console.log("Браузер не підтримує сповіщення.");
+    return;
+  }
+
+  const permission = await Notification.requestPermission();
+  if (permission === 'granted') {
+    console.log("Дозвіл на сповіщення отримано.");
+    scheduleNotifications();
+  } else {
+    console.log("Дозвіл на сповіщення не надано.");
+  }
+}
+
+requestNotificationPermission();
+function scheduleNotifications() {
+  fetchCurrentLesson().then(({ currentDay, currentLesson, currentWeek }) => {
+    const lessonTimes = ["8:30", "10:25", "12:20", "14:15", "16:10", "18:30", "20:20"];
+    if (!currentLesson) return;
+
+    const [hours, minutes] = lessonTimes[currentLesson - 1].split(":").map(Number);
+    const lessonTime = new Date();
+    lessonTime.setHours(hours, minutes - 30, 0, 0); // Сповіщення за 30 хвилин
+
+    const now = new Date();
+    const timeDiff = lessonTime.getTime() - now.getTime();
+
+    if (timeDiff > 0) {
+      setTimeout(() => {
+        new Notification("Нагадування!", {
+          body: `Через 30 хвилин починається пара.`,
+          icon: "/icon.png"
+        });
+      }, timeDiff);
+    }
+  });
+}
+
+
