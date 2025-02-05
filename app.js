@@ -75,7 +75,14 @@ async function fetchSchedule(groupId) {
       const tbody = document.querySelector(`#${week} tbody`);
       tbody.innerHTML = "";
       data.data[week].forEach(day => {
-        day.pairs.sort((a, b) => a.time.localeCompare(b.time));
+        day.pairs.sort((a, b) => {
+          const timeToMinutes = (time) => {
+            const [hours, minutes] = time.split(":").map(Number);
+            return hours * 60 + minutes;
+          };
+          return timeToMinutes(a.time) - timeToMinutes(b.time);
+        });
+        
 
         day.pairs.forEach(pairs => {
           const row = document.createElement("tr");
