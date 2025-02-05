@@ -34,3 +34,27 @@ th {
 .current-lesson{
   background-color:  rgba(0, 66, 172, 0.741);
 }
+
+@media screen and (max-width: 768px) {
+  table {
+    width: 100%;
+    table-layout: fixed; /* Фіксований розподіл ширини */
+  }
+
+  th, td {
+    font-size: 14px; /* Зменшений розмір тексту */
+    padding: 8px;
+    word-wrap: break-word; /* Автоматичний перенос довгого тексту */
+  }
+
+  th:nth-child(1), th:nth-child(2){
+    width: 5%;
+  }
+  th:nth-child(4){
+    width: 10%;
+  }
+  th:nth-child(5){
+    width: 18%;
+  }
+
+}
