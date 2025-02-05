@@ -57,6 +57,7 @@ function createTables() {
             <th>Предмет</th>
             <th>Аудиторія</th>
             <th>Викладач</th>
+            <th>❌</th>
         </tr></thead>
         <tbody></tbody>
       </table>
@@ -92,16 +93,63 @@ async function fetchSchedule(groupId) {
             <td>${pairs.name || "-"}</td>
             <td>${pairs.place || " "} ${pairs.type}</td>
             <td>${pairs.teacherName || "-"}</td>
+            <td><input type="checkbox" onclick="hidePair(this)"></td>
           `;
           tbody.appendChild(row);
         });
       });
     });
     highlightCurrentLesson();
+    hidePairLocalStorage();
   } catch (error) {
     console.error("Помилка завантаження розкладу", error);
   }
 }
+
+function hidePair(checkbox) {
+  const row = checkbox.closest("tr");
+  if (!row) return;
+
+  const pairName = row.children[2].textContent.trim(); // Отримуємо назву пари
+  let hiddenPairs = JSON.parse(localStorage.getItem("hiddenPairs")) || [];
+  const shouldHide = checkbox.checked;
+
+  if (shouldHide) {
+    if (!hiddenPairs.includes(pairName)) {
+      hiddenPairs.push(pairName);
+    }
+  } else {
+    hiddenPairs = hiddenPairs.filter(name => name !== pairName);
+  }
+
+  localStorage.setItem("hiddenPairs", JSON.stringify(hiddenPairs));
+
+  document.querySelectorAll("tr").forEach(tr => {
+    if (tr.children[2] && tr.children[2].textContent.trim() === pairName) {
+      tr.classList.toggle("hidePair", shouldHide);
+      const input = tr.querySelector("input[type='checkbox']");
+      if (input) {
+        input.checked = shouldHide; // Оновлюємо стан чекбоксів у всіх рядках з тією ж парою
+      }
+    }
+  });
+}
+
+function hidePairLocalStorage() {
+  let hiddenPairs = JSON.parse(localStorage.getItem("hiddenPairs")) || [];
+
+  document.querySelectorAll("tr").forEach(tr => {
+    const pairName = tr.children[2]?.textContent.trim();
+    if (pairName && hiddenPairs.includes(pairName)) {
+      tr.classList.add("hidePair");
+      const input = tr.querySelector("input[type='checkbox']");
+      if (input) {
+        input.checked = true; // Активуємо всі чекбокси для прихованих пар
+      }
+    }
+  });
+}
+
 
 async function fetchCurrentLesson() {
   const url = 'https://api.campus.kpi.ua/time/current';

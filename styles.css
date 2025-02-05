@@ -34,8 +34,17 @@ th {
 .current-lesson{
   background-color:  rgba(0, 66, 172, 0.741);
 }
+.hidePair {
+  color: rgba(255, 255, 255, 0.1); /* Майже невидимий текст */
+  /* font-size: 1px; Дуже маленький текст */
+  padding: 2px; /* Мінімальний відступ */
+  line-height: 1px; /* Зменшена висота рядка */
+  /* height: 1px; Мінімальна висота */
+  overflow: hidden; /* Ховає зайвий вміст */
+}
 
 @media screen and (max-width: 768px) {
+  
   table {
     width: 100%;
     table-layout: fixed; /* Фіксований розподіл ширини */
@@ -56,5 +65,15 @@ th {
   th:nth-child(5){
     width: 18%;
   }
-
+  th:nth-child(6){
+    width: 2%;
+  }
+  .hidePair {
+    color: rgba(255, 255, 255, 0.1); /* Майже невидимий текст */
+    font-size: 1px; /* Дуже маленький текст */
+    padding: 2px; /* Мінімальний відступ */
+    line-height: 1px; /* Зменшена висота рядка */
+    /* height: 1px; Мінімальна висота */
+    overflow: hidden; /* Ховає зайвий вміст */
+  }
 }
