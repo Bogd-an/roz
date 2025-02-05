@@ -35,10 +35,10 @@ self.addEventListener('activate', event => {
   );
 });
 
-self.addEventListener('push', event => {
-  const options = {
-    body: event.data ? event.data.text() : "Через 30 хвилин починається пара!",
-    icon: "/icon.png"
-  };
-  event.waitUntil(self.registration.showNotification("Нагадування!", options));
-});
+// self.addEventListener('push', event => {
+//   const options = {
+//     body: event.data ? event.data.text() : "Через 30 хвилин починається пара!",
+//     icon: "/icon.png"
+//   };
+//   event.waitUntil(self.registration.showNotification("Нагадування!", options));
+// });
