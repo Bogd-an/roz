@@ -247,3 +247,78 @@ fetchGroups();
 // }
 
 
+// Функція для створення зашифрованого посилання
+function createShareLink() {
+  // Отримуємо необхідні дані з localStorage
+  const selectedGroup = localStorage.getItem('selectedGroup');
+  const hiddenPairs = localStorage.getItem('hiddenPairs');
+
+  // Створюємо об'єкт з параметрами
+  const params = {
+    selectedGroup: selectedGroup,
+    hiddenPairs: hiddenPairs
+  };
+
+  // Перетворюємо об'єкт у рядок JSON
+  const jsonString = JSON.stringify(params);
+
+  // Перетворюємо рядок JSON у масив байтів (UTF-8)
+  const encoder = new TextEncoder();
+  const utf8Bytes = encoder.encode(jsonString);
+
+  // Шифруємо масив байтів в Base64
+  const encodedParams = btoa(String.fromCharCode.apply(null, utf8Bytes));
+
+  // Створюємо URL
+  const shareUrl = `${window.location.origin}${window.location.pathname}?data=${encodedParams}`;
+
+  return shareUrl;
+}
+// Декодування параметрів з URL
+function getParamsFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const encodedParams = urlParams.get('data');
+  if (encodedParams) {
+    // Декодуємо Base64
+    const decodedString = atob(encodedParams);
+
+    // Перетворюємо декодовану строку в масив байтів
+    const decoder = new TextDecoder();
+    const decodedBytes = new Uint8Array(decodedString.length);
+    for (let i = 0; i < decodedString.length; i++) {
+      decodedBytes[i] = decodedString.charCodeAt(i);
+    }
+
+    // Перетворюємо масив байтів у рядок JSON
+    const decodedParams = JSON.parse(decoder.decode(decodedBytes));
+    
+    // Зберігаємо параметри в localStorage
+    localStorage.setItem('selectedGroup', decodedParams.selectedGroup);
+    localStorage.setItem('hiddenPairs', decodedParams.hiddenPairs);
+
+    // Завантажуємо розклад для нової групи
+    fetchSchedule(decodedParams.selectedGroup);
+  }
+}
+function copyShareLink() {
+  const shareUrl = createShareLink();
+  const textArea = document.createElement('textarea');
+  textArea.value = shareUrl;
+  document.body.appendChild(textArea);
+  textArea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textArea);
+
+  alert('Посилання скопійовано!');
+}
+
+
+// Додаємо кнопку для поділу
+const shareButton = document.createElement('button');
+shareButton.textContent = 'Поділитись посиланням на групу та приховані пари';
+shareButton.onclick = copyShareLink;
+document.body.appendChild(shareButton);
+
+
+// Викликаємо функцію при завантаженні сторінки
+getParamsFromUrl();
