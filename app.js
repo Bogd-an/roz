@@ -1,5 +1,13 @@
-const app = document.getElementById('app');
 const weekList = ['scheduleFirstWeek', 'scheduleSecondWeek'];
+const lessonTimes = [
+  "8:30", "10:25", "12:20", "14:15", "16:10", "18:30", "20:20"
+];
+const weekName = [
+  "Пн", "Вв", "Ср", "Чт", "Пт", "Сб"
+];
+
+const app = document.getElementById('app');
+
 const urlGroupName = decodeURIComponent(window.location.search).replace("?", "").replace("-", "").toLowerCase();
 const localStorageGroup = localStorage.getItem('selectedGroup');
 
@@ -12,7 +20,7 @@ async function fetchGroups() {
 
     let selectedGroupId = null;
 
-    data.data.forEach(group => {
+    data.forEach(group => {
       const option = document.createElement('option');
       option.value = group.id;
       option.textContent = group.name;
@@ -68,14 +76,14 @@ function createTables() {
 async function fetchSchedule(groupId) {
   if (!groupId) return;
   const url = `https://api.campus.kpi.ua/schedule/lessons?groupId=${groupId}`;
-
+  console.log("Fetching schedule ", url);
   try {
     const response = await fetch(url);
     const data = await response.json();
     weekList.forEach(week => {
       const tbody = document.querySelector(`#${week} tbody`);
       tbody.innerHTML = "";
-      data.data[week].forEach(day => {
+      data[week].forEach(day => {
         day.pairs.sort((a, b) => {
           const timeToMinutes = (time) => {
             const [hours, minutes] = time.split(":").map(Number);
@@ -156,7 +164,8 @@ async function fetchCurrentLesson() {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    return data.data; 
+    // console.log("Current time data", data);
+    return data; 
   } catch (error) {
     console.error("Помилка завантаження поточного часу", error);
   }
@@ -164,13 +173,6 @@ async function fetchCurrentLesson() {
 
 async function highlightCurrentLesson() {
   const { currentDay, currentLesson, currentWeek } = await fetchCurrentLesson();
-  const lessonTimes = [
-    "8:30", "10:25", "12:20", "14:15", "16:10", "18:30", "20:20"
-  ];
-  const weekName = [
-    "Пн", "Вв", "Ср", "Чт", "Пт", "Сб"
-  ];
-
   const rows = document.querySelectorAll(`#${weekList[currentWeek]} tbody tr`);
   let currentLessonRow = null;
   rows.forEach(row => {
