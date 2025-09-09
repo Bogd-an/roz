@@ -174,7 +174,7 @@ async function fetchCurrentLesson() {
 
 async function highlightCurrentLesson() {
   const { currentDay, currentLesson, currentWeek } = await fetchCurrentLesson();
-  const rows = document.querySelectorAll(`#${weekList[currentWeek]} tbody tr`);
+  const rows = document.querySelectorAll(`#${weekList[currentWeek-1]} tbody tr`);
   let currentLessonRow = null;
   rows.forEach(row => {
     const dayCell = row.querySelector("td:first-child").textContent;
@@ -182,7 +182,7 @@ async function highlightCurrentLesson() {
 
     if (dayCell == weekName[currentDay - 1]) {
       row.classList.add("current-day");
-      if (timeCell == lessonTimes[currentLesson]) {
+      if (timeCell == lessonTimes[currentLesson-1]) {
         row.classList.add("current-lesson"); 
         currentLessonRow = row;
       }
