@@ -95,6 +95,7 @@ async function fetchSchedule(groupId) {
 
         day.pairs.forEach(pairs => {
           const row = document.createElement("tr");
+          if (pairs.time.length == 8) pairs.time = pairs.time.substr(0, 5);
           row.innerHTML = `
             <td>${day.day}</td>
             <td>${pairs.time}</td>
