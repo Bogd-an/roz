@@ -1,0 +1,103 @@
+.disLabel 
+{
+    display: inline-block;
+    white-space: normal !important;
+    color: #000 !important;
+    border: 1px solid #777 !important;
+    border-radius: 0.25em;
+    padding: 0.2em 0.6em 0.3em;
+}
+
+.viewSessionScheduleTable 
+{
+    width: auto !important;
+}
+
+.errorMessage {
+    color: red;
+}
+
+body, html {
+    background:#EFEFEF !important;
+    color:#000;
+    font-family: ff, Arial !important;
+}
+
+#nav {
+    background:#0C6B63;
+    height:5px;
+}
+
+.day_backlight {
+    background:#ace2de;
+}
+
+.current_pair {
+    background:#b0d751;
+}
+
+.closest_pair {
+    background:#ebcf81;
+}
+
+a.plainLink:link, a.plainLink:visited { 
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a.plainLink:link:active, a.plainLink:visited:active { 
+    color: black;
+}
+
+a.plainLink:link:hover  
+{
+    color: Blue;
+    text-decoration:  underline !important;
+}
+
+.mobile-font 
+{
+    font-size: 18px
+}
+
+/* @font-face {
+    font-family: ff;
+    src: url(/web/20250128142037im_/http://reg.kpi.ua/fonts/OpenSans-Medium.ttf);
+} */
+
+.head-a{
+    background-color: #3578ba !important;
+    color: white !important;
+    border-radius: 5px !important;
+}
+
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+}
+
+.schedule-table th,
+.schedule-table td {
+  border: 1px solid #ccc;
+  vertical-align: top;
+  padding: 5px;
+  min-width: 120px;
+}
+
+.schedule-table th {
+  background-color: #f0f0f0;
+}
+
+.lesson-block {
+  margin-bottom: 4px;
+  padding: 4px;
+}
+
+.current-day{
+  background-color: #ABE2DF !important;
+}
+.current-lesson{
+  background-color:  #AFD752 !important;
+}
